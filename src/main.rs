@@ -10,6 +10,7 @@ fn main() -> ExitCode {
 
     let res = match args.day {
         Day::Day1(day1_args) => advent_of_code_2023::day1::run(day1_args),
+        Day::Day2(day2_args) => advent_of_code_2023::day2::run(day2_args),
     };
 
     if let Err(err) = res {

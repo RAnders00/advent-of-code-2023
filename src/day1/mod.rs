@@ -8,10 +8,8 @@ use anyhow::{anyhow, Context, Result};
 use std::fs;
 
 pub fn run(args: Args) -> Result<()> {
-    let input = fs::read_to_string(&args.input).with_context(|| format!(
-        "While trying to read file {}",
-        args.input.display()
-    ))?;
+    let input = fs::read_to_string(&args.input)
+        .with_context(|| format!("While trying to read file {}", args.input.display()))?;
 
     let sum_decimal = sum_first_and_last_digits(&input, first_and_last_digit_decimal)?;
     let sum_decimal_or_spelled =
