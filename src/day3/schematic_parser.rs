@@ -44,7 +44,7 @@ impl FromStr for Schematic {
     fn from_str(schematic: &str) -> Result<Schematic> {
         let lines = schematic.lines().collect::<Vec<_>>();
         let mut part_numbers = vec![];
-    
+
         for (line_idx, &line) in lines.iter().enumerate() {
             // Find all numbers in the line.
             for number_match in NUMBER_REGEX.find_iter(line) {
@@ -55,21 +55,21 @@ impl FromStr for Schematic {
                         number_match.as_str()
                     )
                 })?;
-    
+
                 // If this number has at least one symbol around it, it is considered
                 // to be a "part number", and is therefore returned.
                 // A symbol is any character that is not a digit or a dot (".").
-    
+
                 // Find out the chars() offset in the line.
                 // (Regex gives us the byte offset, which we need to convert)
                 // This implementation respects and correctly handles multi-byte UTF8 characters.
                 let match_char_range = CharsRange::from_bytes_range(line, number_match.range());
-    
+
                 let has_adjacent_symbol = is_symbol_left(line, number_match.range())
                     || is_symbol_right(line, number_match.range())
                     || is_symbol_above(&lines, line_idx, match_char_range.clone())
                     || is_symbol_below(&lines, line_idx, match_char_range.clone());
-    
+
                 if has_adjacent_symbol {
                     part_numbers.push(PartNumber {
                         part_number,
@@ -80,21 +80,22 @@ impl FromStr for Schematic {
                 }
             }
         }
-    
+
         let mut gears = vec![];
-    
+
         for (line_idx, &line) in lines.iter().enumerate() {
             for (gear_match_index_bytes, _) in line.match_indices('*') {
-                let chars_index = CharsRange::bytes_index_to_chars_index(line, gear_match_index_bytes);
+                let chars_index =
+                    CharsRange::bytes_index_to_chars_index(line, gear_match_index_bytes);
                 // This is a *potential* gear. We need to check if a number is neighbouring it.
-    
+
                 // If exactly two part numbers neighbour this '*' char, it is considered a gear.
                 let mut neighbors: Vec<PartNumber> = part_numbers
                     .iter()
                     .filter(|part| part.is_neighboring_char(line_idx, chars_index))
                     .cloned()
                     .collect();
-    
+
                 if neighbors.len() == 2 {
                     gears.push(Gear {
                         line_idx,
@@ -108,12 +109,12 @@ impl FromStr for Schematic {
                 }
             }
         }
-    
+
         Ok(Schematic {
             part_numbers,
             gears,
         })
-    }    
+    }
 }
 
 impl PartNumber {
