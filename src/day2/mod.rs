@@ -21,7 +21,7 @@ pub struct Args {
 }
 
 pub fn run(args: Args) -> Result<()> {
-    let input = fs::read_to_string(&args.input)
+    let input: String = fs::read_to_string(&args.input)
         .with_context(|| format!("While trying to read file {}", args.input.display()))?;
 
     let mut sum_of_possible_game_ids: u64 = 0;
