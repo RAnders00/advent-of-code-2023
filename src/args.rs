@@ -16,4 +16,6 @@ pub enum Day {
     Day2(crate::day2::Args),
     /// Run the two algorithms for day 3's challenge
     Day3(crate::day3::Args),
+    /// Run the two algorithms for day 4's challenge
+    Day4(crate::day4::Args),
 }
